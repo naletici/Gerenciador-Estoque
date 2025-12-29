@@ -5,7 +5,15 @@ Prints the local URLs for the app and Swagger docs when starting (useful on Wind
 
 if __name__ == "__main__":
     import os
-    import uvicorn
+    import sys
+    try:
+        import uvicorn
+    except Exception:
+        print("Error: required package 'uvicorn' is not installed.")
+        print("Install dependencies with: pip install -r requirements.txt")
+        print("Or install just uvicorn: pip install 'uvicorn[standard]'")
+        print("If you use a virtual environment, activate it first (e.g. .\.venv\Scripts\Activate.ps1).")
+        sys.exit(1)
 
     HOST = os.getenv("HOST", "0.0.0.0")
     PORT = int(os.getenv("PORT", 8000))

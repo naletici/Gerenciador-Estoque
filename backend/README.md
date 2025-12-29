@@ -35,3 +35,29 @@ Você pode executar `python check_prereqs.py` dentro de `backend/` para checar r
 **Migração do campo `min_quantity`:** o backend tenta adicionar automaticamente a coluna `min_quantity` em bases antigas; se preferir recriar o DB, apague `backend/database.db` durante desenvolvimento e reinicie a API.
 
 **Verificação de pré-requisitos:** use `scripts\check_prereqs.ps1` (Windows PowerShell) ou `scripts/check_prereqs.sh` (macOS/Linux) para checar se Python / Node / npm estão instalados.
+
+---
+
+## 🧪 Testes
+
+Os testes do backend foram implementados usando `pytest` e o `TestClient` do FastAPI. Para executar:
+
+```powershell
+cd backend
+pip install -r requirements.txt
+python -m pytest -q
+```
+
+### Testes implementados
+
+- **test_create_and_get_product** — cria um produto via `POST /products` e valida `GET /products/{id}` (campos `id`, `name`, `quantity`).
+- **test_update_and_delete_product** — atualiza com `PUT /products/{id}` e valida que `DELETE /products/{id}` remove o produto (seguido por `GET` retornando 404).
+- **test_list_products** — garante que `GET /products` retorna uma lista de produtos e contém os produtos criados.
+- **test_get_product_not_found** — valida que `GET /products/{id}` para id inexistente retorna 404.
+
+- **test_create_movement_entrada_increases_quantity** — cria um movimento do tipo `entrada` e verifica aumento da quantidade do produto.
+- **test_create_movement_saida_decreases_quantity** — cria um movimento do tipo `saida` e verifica diminuição da quantidade do produto.
+- **test_create_movement_cannot_remove_more_than_available** — verifica que tentar remover mais que o disponível retorna 400.
+- **test_create_movement_invalid_type_or_product** — valida tipos inválidos (400) e movimentações para produto inexistente (404).
+- **test_list_movements** — garante que `GET /movements` retorna a lista de movimentos e inclui os movimentos criados.
+

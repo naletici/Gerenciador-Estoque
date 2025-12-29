@@ -94,6 +94,31 @@ Abra o frontend em: `http://localhost:5173` (por padrão) e a API em `http://loc
 
 ## ✅ Próximos passos (opções)
 - Adicionar Docker + docker-compose (execução em qualquer OS) 🐳
-- Adicionar testes automatizados (pytest / testes frontend) ✅
+- Adicionar testes automatizados (pytest) ✅
 - Configurar CI/CD (GitHub Actions) 🔁
+
+---
+
+## 🧪 Testes
+
+### Backend
+- Implementado com `pytest` + `TestClient` (FastAPI). Rode em `backend/` com:
+
+```powershell
+pip install -r backend/requirements.txt
+python -m pytest -q
+```
+
+**Testes implementados**:
+- `test_create_and_get_product` — cria e recupera produto; valida campos e `GET /products/{id}`.
+- `test_update_and_delete_product` — atualiza produto com `PUT` e verifica `DELETE` remove o registro.
+- `test_list_products` — valida `GET /products`.
+- `test_get_product_not_found` — checa 404 para produto inexistente.
+- `test_create_movement_entrada_increases_quantity` — movimento `entrada` aumenta quantidade.
+- `test_create_movement_saida_decreases_quantity` — movimento `saida` diminui quantidade.
+- `test_create_movement_cannot_remove_more_than_available` — garante erro ao retirar mais que disponível.
+- `test_create_movement_invalid_type_or_product` — valida tipos inválidos e produto inexistente.
+- `test_list_movements` — valida `GET /movements` retorna movimentos.
+
+> Observação: os testes do frontend não estão implementados neste repositório; se quiser, posso adicioná-los mais tarde (Jest + React Testing Library).
 
