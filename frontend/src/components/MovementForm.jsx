@@ -41,7 +41,7 @@ export default function MovementForm({ initialProduct, onSubmit, onCancel }){
       </label>
 
       <div style={{display:'flex', gap:8}}>
-        <button type="submit">Registrar</button>
+        <button type="submit">Salvar</button>
         <button type="button" className="secondary" onClick={onCancel}>Cancelar</button>
       </div>
     </form>
