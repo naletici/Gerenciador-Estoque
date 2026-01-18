@@ -118,12 +118,15 @@ def deletar_produto(*, product_id: int, session=Depends(get_session)):
     if not product:
         raise HTTPException(status_code=404, detail="Product not found")
     
-    # Delete associated movements first (Cascading Delete)
-    statement = select(Movement).where(Movement.product_id == product_id)
-    movements = session.exec(statement).all()
-    for movement in movements:
-        session.delete(movement)
-
+    # Registra uma movimentação de exclusão para manter o histórico
+    delete_movement = Movement(
+        product_id=product.id,
+        type="excluido",
+        quantity=product.quantity,
+        note=product.name,
+        timestamp=datetime.utcnow()
+    )
+    session.add(delete_movement)
     session.delete(product)
     session.commit()
     return None

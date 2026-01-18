@@ -10,6 +10,7 @@ export default function Toolbar({ query, setQuery, onOpenAdd, onOpenSale }){
           value={query}
           onChange={(e)=>setQuery(e.target.value)}
         />
+        <span className="search-icon" aria-hidden="true"></span>
         {query && (
           <button
             type="button"

@@ -38,13 +38,44 @@ export default function App(){
     setProducts(data)
   }
 
-  useEffect(()=>{ load(); loadMovements() }, [])
+  useEffect(()=>{
+    const cached = loadMovementsCache()
+    if (cached.length) setMovements(cached)
+    load(); loadMovements()
+  }, [])
 
   const loadMovements = async ()=>{
     try{
       const m = await fetchMovements()
-      setMovements(m)
+      const cached = loadMovementsCache()
+      const merged = mergeMovements(m, cached)
+      setMovements(merged)
+      saveMovementsCache(merged)
     }catch(err){ console.error(err) }
+  }
+
+  const loadMovementsCache = ()=>{
+    try{
+      const raw = localStorage.getItem('movements_cache')
+      const parsed = raw ? JSON.parse(raw) : []
+      return Array.isArray(parsed) ? parsed : []
+    }catch(e){
+      return []
+    }
+  }
+
+  const saveMovementsCache = (data)=>{
+    try{
+      localStorage.setItem('movements_cache', JSON.stringify(data))
+    }catch(e){}
+  }
+
+  const mergeMovements = (primary = [], secondary = [])=>{
+    const map = new Map()
+    for (const item of [...primary, ...secondary]){
+      if (item && item.id != null) map.set(String(item.id), item)
+    }
+    return Array.from(map.values()).sort((a,b)=> new Date(b.timestamp) - new Date(a.timestamp))
   }
 
   // sales modal
@@ -153,6 +184,7 @@ export default function App(){
     try{
       await createProduct(payload)
       load()
+      loadMovements()
       closeModal()
     }catch(err){
       console.error(err)
@@ -175,6 +207,7 @@ export default function App(){
     if (!confirm('Deseja excluir esse produto?')) return
     await deleteProduct(id)
     load()
+    loadMovements()
   }
 
   const filtered = products.filter(p => {
